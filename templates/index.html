@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="utf-8">
+  <title>Shadow-Reaper v1.0</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <style>
+    :root{--bg:#0a0a0a;--neon:#00ff41;--red:#ff0044;--font:'Courier New',Courier,monospace}
+    body{margin:0;background:var(--bg);color:var(--neon);font-family:var(--font);display:flex;flex-direction:column;align-items:center;justify-content:center;height:100vh}
+    .banner{font-size:2.5rem;text-shadow:0 0 10px var(--neon);margin-bottom:1rem}
+    .input-box{display:flex;gap:0.5rem}
+    input{padding:0.7rem 1rem;border:1px solid var(--neon);background:transparent;color:var(--neon);border-radius:4px;font-size:1rem}
+    button{padding:0.7rem 1.5rem;border:none;background:var(--neon);color:var(--bg);border-radius:4px;font-weight:bold;cursor:pointer;transition:0.2s}
+    button:hover{background:#fff}
+    #output{margin-top:1.5rem;max-width:700px;white-space:pre-wrap;text-align:left}
+    .loader{border:2px solid var(--neon);border-top:2px solid transparent;border-radius:50%;width:20px;height:20px;animation:spin 1s linear infinite;display:none}
+    @keyframes spin{0%{transform:rotate(0deg)}100%{transform:rotate(360deg)}}
+  </style>
+</head>
+<body>
+  <div class="banner">🜃 Shadow-Reaper v1.0 🜃</div>
+  <div class="input-box">
+    <input id="handle" placeholder="@handle أو الاسم بدون @" />
+    <button id="scanBtn">استخراج</button>
+  </div>
+  <div class="loader" id="loader"></div>
+  <pre id="output"></pre>
+
+  <script>
+    const socket = new WebSocket(`wss://${location.host}/ws`);
+    const handle = document.getElementById('handle');
+    const btn = document.getElementById('scanBtn');
+    const output = document.getElementById('output');
+    const loader = document.getElementById('loader');
+
+    btn.onclick = () => {
+      loader.style.display = 'inline-block';
+      output.textContent = '';
+      socket.send(JSON.stringify({ handle: handle.value.trim() }));
+    };
+
+    socket.onmessage = (ev) => {
+      loader.style.display = 'none';
+      const data = JSON.parse(ev.data);
+      output.textContent = JSON.stringify(data, null, 2);
+    };
+  </script>
+</body>
+</html>
