@@ -1,0 +1,6 @@
+fastapi==0.104.1
+uvicorn[standard]==0.24.0
+tweepy==4.14.0
+phonenumbers==8.13.55
+requests==2.31.0
+jinja2==3.1.2
